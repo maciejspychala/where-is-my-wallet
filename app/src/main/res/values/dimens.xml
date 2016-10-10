@@ -6,4 +6,6 @@
     <dimen name="very_small_margin">4dp</dimen>
     <dimen name="splash_text_margin">32dp</dimen>
     <dimen name="splash_button_margin">24dp</dimen>
+    <dimen name="menu_row_height">160dp</dimen>
+    <dimen name="menu_top_margin">24dp</dimen>
 </resources>
