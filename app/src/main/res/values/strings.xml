@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Wallet</string>
+    <string name="turn_on">turn on</string>
+    <string name="splash_screen_text">We need your location data to monitor position of your car and wallet.</string>
 </resources>
