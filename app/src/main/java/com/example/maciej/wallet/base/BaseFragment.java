@@ -23,8 +23,11 @@ public abstract class BaseFragment<T extends BasePresenterInterface> extends Fra
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayoutId(), container, false);
         unbinder = ButterKnife.bind(this, view);
+        presenter = initFragmentPresenter();
         return view;
     }
+
+    protected abstract T initFragmentPresenter();
 
     @Override
     public void onDestroyView() {

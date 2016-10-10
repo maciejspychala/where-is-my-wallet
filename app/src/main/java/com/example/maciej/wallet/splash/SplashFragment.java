@@ -2,12 +2,7 @@ package com.example.maciej.wallet.splash;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BaseFragment;
@@ -22,12 +17,9 @@ public class SplashFragment extends BaseFragment<SplashFragmentPresenterInterfac
     private static final int PERMISSION_REQUEST_CODE = 1;
     private boolean permissionGranted;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        presenter = new SplashFragmentPresenter(this);
-        return view;
+    protected SplashFragmentPresenterInterface initFragmentPresenter() {
+        return new SplashFragmentPresenter(this);
     }
 
     @Override
