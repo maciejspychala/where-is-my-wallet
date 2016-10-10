@@ -11,6 +11,7 @@ public class SplashFragmentPresenter extends BasePresenter<SplashFragmentView> i
         super(view);
     }
 
+    @Override
     public void onPermissionGranted() {
         view.displayMenu();
     }
