@@ -5,4 +5,6 @@
     <string name="car">car</string>
     <string name="wallet">wallet</string>
     <string name="set_location">set location:</string>
+    <string name="set">set</string>
+    <string name="in_my_pocket">in my pocket</string>
 </resources>
