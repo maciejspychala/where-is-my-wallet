@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
+import com.example.maciej.wallet.MainActivity;
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BaseFragment;
+import com.example.maciej.wallet.menu.MenuFragment;
 
 import butterknife.OnClick;
 
@@ -32,7 +34,7 @@ public class SplashFragment extends BaseFragment<SplashFragmentPresenterInterfac
         super.onResume();
         if (permissionGranted) {
             permissionGranted = false;
-            //TODO: display menu
+            ((MainActivity) getActivity()).showFragment(new MenuFragment());
         }
     }
 
@@ -56,7 +58,7 @@ public class SplashFragment extends BaseFragment<SplashFragmentPresenterInterfac
     @Override
     public void displayMenu() {
         if (isResumed()) {
-            //TODO: display menu
+            ((MainActivity) getActivity()).showFragment(new MenuFragment());
         } else {
             permissionGranted = true;
         }

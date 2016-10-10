@@ -8,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.maciej.wallet.menu.MenuFragment;
+import com.example.maciej.wallet.splash.SplashFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -32,9 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkForPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //TODO: display splash
+            showFragment(new SplashFragment());
         } else {
-            //TODO: display menu
+            showFragment(new MenuFragment());
+
         }
     }
 }
