@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.example.maciej.wallet.DataHolder;
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BasePresenter;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import static com.example.maciej.wallet.map.MapFragment.CAR;
@@ -31,6 +32,11 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> impleme
             view.hideInMyPocketButton();
         }
         view.setTitle(formatTitle(resources));
+    }
+
+    @Override
+    public void onMapLoaded() {
+        view.setMapCamera(DataHolder.getUserLocation());
     }
 
 

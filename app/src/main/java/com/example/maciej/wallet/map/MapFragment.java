@@ -11,9 +11,11 @@ import android.widget.TextView;
 import com.example.maciej.wallet.DataHolder;
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BaseFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
@@ -63,7 +65,9 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
 
     @OnClick(R.id.set_position)
     public void setPosition() {
-        presenter.positionChosen(map.getCameraPosition().target, getContext());
+        if (map != null) {
+            presenter.positionChosen(map.getCameraPosition().target, getContext());
+        }
     }
 
     @Override
@@ -87,8 +91,16 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     }
 
     @Override
+    public void setMapCamera(LatLng location) {
+        if (map != null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13.5f));
+        }
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        presenter.onMapLoaded();
         map.addMarker(new MarkerOptions().position(DataHolder.getCarLocation()));
         map.addMarker(new MarkerOptions().position(DataHolder.getWalletLocation()));
         map.addMarker(new MarkerOptions().position(DataHolder.getUserLocation()));

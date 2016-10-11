@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.example.maciej.wallet.base.BasePresenterInterface;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -17,4 +18,5 @@ public interface MapFragmentPresenterInterface extends BasePresenterInterface {
 
     void onCreate(Resources resources);
 
+    void onMapLoaded();
 }
