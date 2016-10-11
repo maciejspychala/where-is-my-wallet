@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.maciej.wallet.DataHolder;
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BaseFragment;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -87,6 +89,9 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        map.addMarker(new MarkerOptions().position(DataHolder.getCarLocation()));
+        map.addMarker(new MarkerOptions().position(DataHolder.getWalletLocation()));
+        map.addMarker(new MarkerOptions().position(DataHolder.getUserLocation()));
     }
 
     @Override
