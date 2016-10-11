@@ -10,4 +10,6 @@ public interface MapFragmentView extends BaseView {
     void setTitle(String text);
 
     void close();
+
+    void hideInMyPocketButton();
 }

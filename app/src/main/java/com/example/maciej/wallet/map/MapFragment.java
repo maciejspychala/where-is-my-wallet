@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.maciej.wallet.R;
@@ -30,8 +31,10 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     @BindView(R.id.map_title)
     TextView title;
 
-    public static MapFragment newInstance(int item) {
+    @BindView(R.id.in_my_pocket)
+    Button inPocket;
 
+    public static MapFragment newInstance(int item) {
         Bundle args = new Bundle();
         args.putInt(KEY, item);
         MapFragment fragment = new MapFragment();
@@ -87,6 +90,11 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     @Override
     public void close() {
         getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void hideInMyPocketButton() {
+        inPocket.setVisibility(View.GONE);
     }
 
     @Override

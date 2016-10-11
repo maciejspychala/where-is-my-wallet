@@ -3,9 +3,12 @@ package com.example.maciej.wallet.map;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BasePresenter;
+
+import butterknife.BindView;
 
 import static com.example.maciej.wallet.map.MapFragment.WALLET;
 
@@ -25,7 +28,7 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> impleme
     @Override
     public void onCreate(Resources resources) {
         if (model.key == MapFragment.CAR) {
-            //TODO: hide inMyPocket button;
+            view.hideInMyPocketButton();
         }
         view.setTitle(formatTitle(resources));
     }
