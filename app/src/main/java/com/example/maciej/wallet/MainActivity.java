@@ -1,6 +1,7 @@
 package com.example.maciej.wallet;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             showFragment(new SplashFragment());
         } else {
+            Intent intent = new Intent(this, LocationService.class);
+            startService(intent);
             showFragment(new MenuFragment());
-
         }
     }
 }
