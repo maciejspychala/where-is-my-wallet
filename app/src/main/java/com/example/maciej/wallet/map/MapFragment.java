@@ -15,6 +15,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by maciej on 11/10/16.
@@ -24,6 +25,7 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     public static int CAR = 1;
     public static int WALLET = 2;
     public static final String KEY = "KEY";
+    private GoogleMap map;
 
     @BindView(R.id.map_view)
     MapView mapView;
@@ -53,28 +55,13 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mapView != null) {
-            mapView.onDestroy();
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
     protected MapFragmentPresenterInterface initFragmentPresenter() {
         return new MapFragmentPresenter(this, getArguments(), getResources());
+    }
+
+    @OnClick(R.id.set_position)
+    public void setPosition() {
+        presenter.positionChosen(map.getCameraPosition().target, getContext());
     }
 
     @Override
@@ -99,6 +86,26 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mapView != null) {
+            mapView.onDestroy();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
     }
 }

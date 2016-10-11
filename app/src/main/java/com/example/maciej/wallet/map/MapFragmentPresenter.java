@@ -1,15 +1,15 @@
 package com.example.maciej.wallet.map;
 
+import android.content.Context;
 import android.content.res.Resources;
-import android.location.Location;
 import android.os.Bundle;
-import android.widget.Button;
 
+import com.example.maciej.wallet.DataHolder;
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BasePresenter;
+import com.google.android.gms.maps.model.LatLng;
 
-import butterknife.BindView;
-
+import static com.example.maciej.wallet.map.MapFragment.CAR;
 import static com.example.maciej.wallet.map.MapFragment.WALLET;
 
 /**
@@ -33,9 +33,15 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> impleme
         view.setTitle(formatTitle(resources));
     }
 
-    @Override
-    public void positionChosen(Location location) {
 
+    @Override
+    public void positionChosen(LatLng location, Context context) {
+        if (model.key == CAR) {
+            DataHolder.setCarLocation(context, location);
+        } else {
+            DataHolder.setWalletLocation(context, location);
+        }
+        view.close();
     }
 
     @Override
