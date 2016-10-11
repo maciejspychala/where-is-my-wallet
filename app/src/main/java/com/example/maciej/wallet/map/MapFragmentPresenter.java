@@ -14,17 +14,12 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> impleme
     }
 
     @Override
-    public void positionChoosed(Location location) {
+    public void positionChosen(Location location) {
 
     }
 
     @Override
     public String formatTitle(String title) {
         return null;
-    }
-
-    @Override
-    public void positionChoosed() {
-
     }
 }

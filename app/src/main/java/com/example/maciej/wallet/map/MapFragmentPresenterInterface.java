@@ -9,9 +9,7 @@ import com.example.maciej.wallet.base.BasePresenterInterface;
  */
 public interface MapFragmentPresenterInterface extends BasePresenterInterface {
 
-    void positionChoosed(Location location);
+    void positionChosen(Location location);
 
     String formatTitle(String title);
-
-    void positionChoosed();
 }
