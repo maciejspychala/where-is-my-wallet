@@ -43,8 +43,10 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
 
     @Override
     public void onDestroy() {
+        if (mapView != null) {
+            mapView.onDestroy();
+        }
         super.onDestroy();
-        mapView.onDestroy();
     }
 
     @Override
