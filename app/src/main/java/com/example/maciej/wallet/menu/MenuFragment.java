@@ -1,7 +1,9 @@
 package com.example.maciej.wallet.menu;
 
+import com.example.maciej.wallet.MainActivity;
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BaseFragment;
+import com.example.maciej.wallet.map.MapFragment;
 
 import butterknife.OnClick;
 
@@ -23,16 +25,16 @@ public class MenuFragment extends BaseFragment<MenuFragmentPresenterInterface> i
 
     @OnClick(R.id.menu_car)
     public void openMapFragmentForCar() {
-        //TODO open mapFragment for car
+        presenter.itemSelected(MapFragment.Item.CAR);
     }
 
     @OnClick(R.id.menu_wallet)
     public void openMapFragmentForWallet() {
-        //TODO open mapFragment for wallet
+        presenter.itemSelected(MapFragment.Item.WALLET);
     }
 
     @Override
-    public void openMapFragment(String key) {
-        //TODO open mapFragment for key
+    public void openMapFragment(MapFragment.Item item) {
+        ((MainActivity) getActivity()).showFragment(new MapFragment(), true);
     }
 }

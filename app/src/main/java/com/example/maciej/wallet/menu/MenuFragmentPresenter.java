@@ -1,6 +1,7 @@
 package com.example.maciej.wallet.menu;
 
 import com.example.maciej.wallet.base.BasePresenter;
+import com.example.maciej.wallet.map.MapFragment;
 
 /**
  * Created by maciej on 09/10/16.
@@ -11,7 +12,8 @@ public class MenuFragmentPresenter extends BasePresenter<MenuFragmentView> imple
         super(view);
     }
 
-    public void itemSelected(String key) {
-        view.openMapFragment(key);
+    @Override
+    public void itemSelected(MapFragment.Item item) {
+        view.openMapFragment(item);
     }
 }
