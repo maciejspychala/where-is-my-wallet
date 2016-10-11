@@ -1,5 +1,6 @@
 package com.example.maciej.wallet.map;
 
+import android.content.res.Resources;
 import android.location.Location;
 
 import com.example.maciej.wallet.base.BasePresenterInterface;
@@ -11,5 +12,8 @@ public interface MapFragmentPresenterInterface extends BasePresenterInterface {
 
     void positionChosen(Location location);
 
-    String formatTitle(String title);
+    String formatTitle(Resources resources);
+
+    void onCreate(Resources resources);
+
 }

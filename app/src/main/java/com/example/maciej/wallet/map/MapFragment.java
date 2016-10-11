@@ -20,11 +20,24 @@ import butterknife.BindView;
  */
 public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> implements MapFragmentView, OnMapReadyCallback {
 
+    public static int CAR = 1;
+    public static int WALLET = 2;
+    public static final String KEY = "KEY";
+
     @BindView(R.id.map_view)
     MapView mapView;
 
     @BindView(R.id.map_title)
     TextView title;
+
+    public static MapFragment newInstance(int item) {
+
+        Bundle args = new Bundle();
+        args.putInt(KEY, item);
+        MapFragment fragment = new MapFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -34,6 +47,7 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
         mapView.getMapAsync(this);
         return view;
     }
+
 
     @Override
     public void onResume() {
@@ -57,7 +71,7 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
 
     @Override
     protected MapFragmentPresenterInterface initFragmentPresenter() {
-        return new MapFragmentPresenter(this);
+        return new MapFragmentPresenter(this, getArguments(), getResources());
     }
 
     @Override
@@ -79,6 +93,4 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     public void onMapReady(GoogleMap googleMap) {
 
     }
-
-    public enum Item {CAR, WALLET}
 }

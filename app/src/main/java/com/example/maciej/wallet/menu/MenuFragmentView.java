@@ -7,5 +7,5 @@ import com.example.maciej.wallet.map.MapFragment;
  * Created by maciej on 09/10/16.
  */
 public interface MenuFragmentView extends BaseView {
-    void openMapFragment(MapFragment.Item item);
+    void openMapFragment(int item);
 }

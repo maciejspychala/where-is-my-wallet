@@ -13,7 +13,7 @@ public class MenuFragmentPresenter extends BasePresenter<MenuFragmentView> imple
     }
 
     @Override
-    public void itemSelected(MapFragment.Item item) {
+    public void itemSelected(int item) {
         view.openMapFragment(item);
     }
 }

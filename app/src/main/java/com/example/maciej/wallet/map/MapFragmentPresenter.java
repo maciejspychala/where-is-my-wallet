@@ -1,16 +1,33 @@
 package com.example.maciej.wallet.map;
 
+import android.content.res.Resources;
 import android.location.Location;
+import android.os.Bundle;
 
+import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BasePresenter;
+
+import static com.example.maciej.wallet.map.MapFragment.WALLET;
 
 /**
  * Created by maciej on 11/10/16.
  */
 public class MapFragmentPresenter extends BasePresenter<MapFragmentView> implements MapFragmentPresenterInterface {
 
-    public MapFragmentPresenter(MapFragmentView view) {
+    MapModel model;
+
+    public MapFragmentPresenter(MapFragmentView view, Bundle arguments, Resources resources) {
         super(view);
+        model = new MapModel(arguments.getInt(MapFragment.KEY));
+        onCreate(resources);
+    }
+
+    @Override
+    public void onCreate(Resources resources) {
+        if (model.key == MapFragment.CAR) {
+            //TODO: hide inMyPocket button;
+        }
+        view.setTitle(formatTitle(resources));
     }
 
     @Override
@@ -19,7 +36,8 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> impleme
     }
 
     @Override
-    public String formatTitle(String title) {
-        return null;
+    public String formatTitle(Resources resources) {
+        return String.format(resources.getString(R.string.map_title),
+                model.key == WALLET ? resources.getString(R.string.wallet) : resources.getString(R.string.car));
     }
 }

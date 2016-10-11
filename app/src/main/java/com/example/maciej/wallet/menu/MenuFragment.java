@@ -25,16 +25,16 @@ public class MenuFragment extends BaseFragment<MenuFragmentPresenterInterface> i
 
     @OnClick(R.id.menu_car)
     public void openMapFragmentForCar() {
-        presenter.itemSelected(MapFragment.Item.CAR);
+        presenter.itemSelected(MapFragment.CAR);
     }
 
     @OnClick(R.id.menu_wallet)
     public void openMapFragmentForWallet() {
-        presenter.itemSelected(MapFragment.Item.WALLET);
+        presenter.itemSelected(MapFragment.WALLET);
     }
 
     @Override
-    public void openMapFragment(MapFragment.Item item) {
-        ((MainActivity) getActivity()).showFragment(new MapFragment(), true);
+    public void openMapFragment(int item) {
+        ((MainActivity) getActivity()).showFragment(MapFragment.newInstance(item), true);
     }
 }
