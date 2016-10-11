@@ -10,7 +10,6 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,7 +25,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
 
     private GoogleApiClient googleApiClient;
-    private final int TIME_INTERVAL = 1000;
+    private final int TIME_INTERVAL = 60000;
 
     @Nullable
     @Override
@@ -78,6 +77,5 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onLocationChanged(Location location) {
         DataHolder.setUserLocation(getBaseContext(), locationToLatLng(location));
-        Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_SHORT).show();
     }
 }
