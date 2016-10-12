@@ -7,5 +7,10 @@
     <string name="set_location">set location:</string>
     <string name="set">set</string>
     <string name="in_my_pocket">in my pocket</string>
-    <string name="map_title">set %s position:</string>`
+    <string name="map_title">set %s position:</string>
+    <string name="congrats">Whoooa!</string>
+    <string name="reach_car_with_wallet">You reached your car with wallet in pocket. Nice.</string>
+    <string name="ups">Ups!</string>
+    <string name="go_back_for_wallet">No wallet, no ride.</string>
+    <string name="tracking">tracking</string>`
 </resources>

@@ -1,7 +1,10 @@
 package com.example.maciej.wallet;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,6 +13,8 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -92,10 +97,55 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             location.setAccuracy(0f);
             float distance = location.distanceTo(new Location(car));
             if (distance < 20.0f) {
-                Toast.makeText(getBaseContext(), "in a car. Distance: " + Float.toString(distance), Toast.LENGTH_LONG).show();
+                createNotification();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void createNotification() {
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setAutoCancel(true)
+                        .setColor(0xff0c12e1)
+                        .setSmallIcon(R.drawable.ic_account_balance_wallet_black_48dp);
+
+        if (DataHolder.isWalletInPocket()) {
+            notificationBuilder.setContentTitle(getString(R.string.congrats))
+                    .setContentText(getString(R.string.reach_car_with_wallet));
+        } else {
+            notificationBuilder.setContentTitle(getString(R.string.ups))
+                    .setContentText(getString(R.string.go_back_for_wallet));
+
+        }
+
+// Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+// The stack builder object will contain an artificial back stack for the
+// started Activity.
+// This ensures that navigating backward from the Activity leads out of
+// your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+// Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+// Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        notificationBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+        mNotificationManager.notify(1, notificationBuilder.build());
     }
 }
