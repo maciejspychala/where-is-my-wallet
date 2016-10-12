@@ -19,4 +19,6 @@ public interface MapFragmentPresenterInterface extends BasePresenterInterface {
     void onCreate(Resources resources);
 
     void onMapLoaded();
+
+    void setWalletInPocket(Context context);
 }

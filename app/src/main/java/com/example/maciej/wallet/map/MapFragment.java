@@ -70,6 +70,11 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
         }
     }
 
+    @OnClick(R.id.in_my_pocket)
+    public void setWalletInPocket(){
+        presenter.setWalletInPocket(getContext());
+    }
+
     @Override
     public int getLayoutId() {
         return R.layout.fragment_map;
