@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,7 +26,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
 
     private GoogleApiClient googleApiClient;
-    private final int TIME_INTERVAL = 60000;
+    private final int TIME_INTERVAL = 10000;
+    private final int MIN_TIME_INTERVAL = 5000;
 
     @Nullable
     @Override
@@ -42,7 +44,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 .addOnConnectionFailedListener(this)
                 .build();
         googleApiClient.connect();
-
     }
 
     @Override
@@ -54,8 +55,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 googleApiClient)));
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(TIME_INTERVAL);
-        locationRequest.setFastestInterval(TIME_INTERVAL);
-        locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        locationRequest.setFastestInterval(MIN_TIME_INTERVAL);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 googleApiClient, locationRequest, this);
     }
@@ -76,6 +77,25 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
+        checkDistanceToCar(location);
         DataHolder.setUserLocation(getBaseContext(), locationToLatLng(location));
+    }
+
+    private void checkDistanceToCar(Location location) {
+        if (DataHolder.getCarLocation() == null) {
+            DataHolder.init(getBaseContext());
+        }
+        try {
+            Location car = new Location("");
+            car.setLatitude(DataHolder.getCarLocation().latitude);
+            car.setLongitude(DataHolder.getCarLocation().longitude);
+            location.setAccuracy(0f);
+            float distance = location.distanceTo(new Location(car));
+            if (distance < 20.0f) {
+                Toast.makeText(getBaseContext(), "in a car. Distance: " + Float.toString(distance), Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
