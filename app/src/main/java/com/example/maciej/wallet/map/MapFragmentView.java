@@ -15,4 +15,6 @@ public interface MapFragmentView extends BaseView {
     void hideInMyPocketButton();
 
     void setMapCamera(LatLng location);
+
+    void setViewForShowingWalletPosition();
 }

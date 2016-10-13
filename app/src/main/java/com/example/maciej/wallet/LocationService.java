@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -67,16 +68,23 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        if (lastLocation != null) {
-            DataHolder.setUserLocation(getBaseContext(), locationToLatLng(lastLocation));
-        }
+        Toast.makeText(LocationService.this, "new location", Toast.LENGTH_SHORT).show();
+        saveLastLocation();
         initLocationUpdates();
     }
 
+
+    void saveLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            if (lastLocation != null) {
+                DataHolder.setUserLocation(getBaseContext(), locationToLatLng(lastLocation));
+            }
+        }
+    }
 
     private synchronized void initLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -111,8 +119,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        checkDistanceToCar(location);
         DataHolder.setUserLocation(getBaseContext(), locationToLatLng(location));
+        checkDistanceToCar(location);
     }
 
     private void checkDistanceToCar(Location location) {
@@ -123,7 +131,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             car.setLongitude(DataHolder.getCarLocation().longitude);
             location.setAccuracy(0f);
             float distance = location.distanceTo(new Location(car));
-            if (distance < 20.0f && tracking) {
+            if (distance < 25.0f && tracking) {
                 createNotification();
             }
         } catch (Exception e) {
@@ -141,8 +149,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         } else {
             removeLocationUpdates();
         }
+        saveLastLocation();
         return start;
     }
+
 
     private void initDataHolder() {
         if (DataHolder.getCarLocation() == null) {
@@ -155,6 +165,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 new NotificationCompat.Builder(this)
                         .setAutoCancel(true)
                         .setColor(0xff0c12e1)
+                        .setVibrate(new long[]{100, 100, 100, 100})
                         .setSmallIcon(R.drawable.ic_account_balance_wallet_black_48dp);
 
         if (DataHolder.isWalletInPocket()) {
@@ -163,21 +174,26 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         } else {
             notificationBuilder.setContentTitle(getString(R.string.ups))
                     .setContentText(getString(R.string.go_back_for_wallet));
+            setIntentForNotification(notificationBuilder);
         }
 
-        notificationBuilder.setVibrate(new long[]{100, 100, 100, 100});
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1, notificationBuilder.build());
+        tracking = false;
+        DataHolder.setTracking(getBaseContext(), false);
+    }
+
+    private void setIntentForNotification(NotificationCompat.Builder notificationBuilder) {
         Intent resultIntent = new Intent(this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(MainActivity.SHOW_WALLET, true);
+        resultIntent.putExtras(bundle);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(1, notificationBuilder.build());
-
-        tracking = false;
-        DataHolder.setTracking(getBaseContext(), false);
     }
 }

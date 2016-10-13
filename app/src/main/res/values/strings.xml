@@ -12,5 +12,6 @@
     <string name="reach_car_with_wallet">You reached your car with wallet in pocket. Nice.</string>
     <string name="ups">Ups!</string>
     <string name="go_back_for_wallet">No wallet, no ride.</string>
-    <string name="tracking">tracking</string>`
+    <string name="tracking">tracking</string>
+    <string name="wallet_position">Wallet position</string>`
 </resources>

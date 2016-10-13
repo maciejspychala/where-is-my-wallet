@@ -25,6 +25,7 @@
 
 
         <ImageView
+            android:id="@+id/map_pin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/map_center"

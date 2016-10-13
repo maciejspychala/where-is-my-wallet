@@ -9,20 +9,26 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.maciej.wallet.map.MapFragment;
 import com.example.maciej.wallet.menu.MenuFragment;
 import com.example.maciej.wallet.splash.SplashFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String SHOW_WALLET = "SHOW_WALLET";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
+        DataHolder.init(this);
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(SHOW_WALLET, false)) {
+            showFragment(MapFragment.newInstance(MapFragment.SHOW_WALLET));
+        } else if (savedInstanceState == null) {
             checkForPermission();
-            DataHolder.init(this);
         }
     }
+
 
     public void showFragment(Fragment fragment) {
         showFragment(fragment, false);

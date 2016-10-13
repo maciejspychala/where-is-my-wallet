@@ -10,6 +10,7 @@ import com.example.maciej.wallet.base.BasePresenter;
 import com.google.android.gms.maps.model.LatLng;
 
 import static com.example.maciej.wallet.map.MapFragment.CAR;
+import static com.example.maciej.wallet.map.MapFragment.SHOW_WALLET;
 import static com.example.maciej.wallet.map.MapFragment.WALLET;
 
 /**
@@ -27,8 +28,11 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> impleme
 
     @Override
     public void onCreate(Resources resources) {
-        if (model.key == MapFragment.CAR) {
+        if (model.key == CAR) {
             view.hideInMyPocketButton();
+        }
+        if (model.key == SHOW_WALLET) {
+            view.setViewForShowingWalletPosition();
         }
         view.setTitle(formatTitle(resources));
     }
@@ -58,7 +62,13 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> impleme
 
     @Override
     public String formatTitle(Resources resources) {
-        return String.format(resources.getString(R.string.map_title),
-                model.key == WALLET ? resources.getString(R.string.wallet) : resources.getString(R.string.car));
+        String title = "";
+        if (model.key == SHOW_WALLET) {
+            title = resources.getString(R.string.wallet_position);
+        } else {
+            String.format(resources.getString(R.string.map_title),
+                    model.key == WALLET ? resources.getString(R.string.wallet) : resources.getString(R.string.car));
+        }
+        return title;
     }
 }

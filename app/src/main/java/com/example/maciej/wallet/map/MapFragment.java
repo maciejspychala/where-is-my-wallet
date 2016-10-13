@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.maciej.wallet.DataHolder;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -28,8 +30,10 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
 
     public static int CAR = 1;
     public static int WALLET = 2;
+    public static int SHOW_WALLET = 3;
     public static final String KEY = "KEY";
     private GoogleMap map;
+    private boolean showWallet;
 
     @BindView(R.id.map_view)
     MapView mapView;
@@ -39,6 +43,12 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
 
     @BindView(R.id.in_my_pocket)
     Button inPocket;
+
+    @BindView(R.id.map_buttons)
+    View buttonsLayout;
+
+    @BindView(R.id.map_pin)
+    ImageView mapPin;
 
     public static MapFragment newInstance(int item) {
         Bundle args = new Bundle();
@@ -71,7 +81,7 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     }
 
     @OnClick(R.id.in_my_pocket)
-    public void setWalletInPocket(){
+    public void setWalletInPocket() {
         presenter.setWalletInPocket(getContext());
     }
 
@@ -103,12 +113,25 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     }
 
     @Override
+    public void setViewForShowingWalletPosition() {
+        showWallet = true;
+        if (map != null) {
+            map.addMarker(new MarkerOptions().position(DataHolder.getWalletLocation()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_account_balance_wallet_black_48dp)));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(DataHolder.getWalletLocation(), 13.5f));
+            showWallet = false;
+        }
+        mapPin.setVisibility(View.INVISIBLE);
+        buttonsLayout.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        presenter.onMapLoaded();
-        map.addMarker(new MarkerOptions().position(DataHolder.getCarLocation()));
-        map.addMarker(new MarkerOptions().position(DataHolder.getWalletLocation()));
-        map.addMarker(new MarkerOptions().position(DataHolder.getUserLocation()));
+        if (!showWallet) {
+            presenter.onMapLoaded();
+        } else {
+            setViewForShowingWalletPosition();
+        }
     }
 
     @Override
