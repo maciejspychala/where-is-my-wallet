@@ -13,6 +13,7 @@ public class MenuFragmentPresenter extends BasePresenter<MenuFragmentView> imple
 
     public MenuFragmentPresenter(MenuFragmentView view) {
         super(view);
+        view.setTrackingCheckBox(DataHolder.isTracking());
     }
 
     @Override

@@ -31,6 +31,7 @@ public class DataHolder {
         carLocation = getLocationFromPref(preferences, CAR_LOCATION);
         walletLocation = getLocationFromPref(preferences, WALLET_LOCATION);
         walletInPocket = preferences.getBoolean(IN_POCKET, false);
+        tracking = preferences.getBoolean(TRACKING, false);
     }
 
     private static LatLng getLocationFromPref(SharedPreferences preferences, String KEY) {

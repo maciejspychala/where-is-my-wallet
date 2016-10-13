@@ -29,10 +29,11 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    public static final String TRACKING_KEY = "TRACKING_KEY";
     private GoogleApiClient googleApiClient;
-    private final int TIME_INTERVAL = 10000;
-    private final int MIN_TIME_INTERVAL = 5000;
+    private final int TIME_INTERVAL = 15000;
+    private final int MIN_TIME_INTERVAL = 10000;
+    private LocationRequest locationRequest;
+    private boolean tracking;
 
     @Nullable
     @Override
@@ -43,12 +44,26 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onCreate() {
         super.onCreate();
-        googleApiClient = new GoogleApiClient.Builder(getBaseContext())
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        googleApiClient.connect();
+        initLocationRequest();
+        initGoogleClient();
+    }
+
+    private synchronized void initGoogleClient() {
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(getBaseContext())
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+            googleApiClient.connect();
+        }
+    }
+
+    private void initLocationRequest() {
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(TIME_INTERVAL);
+        locationRequest.setFastestInterval(MIN_TIME_INTERVAL);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
     @Override
@@ -56,14 +71,38 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        DataHolder.setUserLocation(getBaseContext(), locationToLatLng(LocationServices.FusedLocationApi.getLastLocation(
-                googleApiClient)));
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(TIME_INTERVAL);
-        locationRequest.setFastestInterval(MIN_TIME_INTERVAL);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                googleApiClient, locationRequest, this);
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        if (lastLocation != null) {
+            DataHolder.setUserLocation(getBaseContext(),
+                    locationToLatLng(lastLocation));
+        }
+        initLocationUpdates();
+
+    }
+
+
+    private synchronized void initLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        initDataHolder();
+        if (DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected() && !tracking) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    googleApiClient, locationRequest, this);
+            tracking = true;
+            Toast.makeText(LocationService.this, "request", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private synchronized void removeLocationUpdates() {
+        initDataHolder();
+        if (!DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected() && tracking) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    googleApiClient, this);
+            tracking = false;
+            Toast.makeText(LocationService.this, "remove", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     private LatLng locationToLatLng(Location location) {
@@ -82,6 +121,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
+        Toast.makeText(LocationService.this, "update", Toast.LENGTH_SHORT).show();
         checkDistanceToCar(location);
         DataHolder.setUserLocation(getBaseContext(), locationToLatLng(location));
     }
@@ -105,9 +145,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int start = super.onStartCommand(intent, flags, startId);
+        initGoogleClient();
         initDataHolder();
-        boolean tracking = DataHolder.isTracking();
-        Toast.makeText(getBaseContext(), Boolean.toString(tracking), Toast.LENGTH_LONG).show();
+        if (DataHolder.isTracking()) {
+            initLocationUpdates();
+        } else {
+            removeLocationUpdates();
+        }
         return start;
     }
 
