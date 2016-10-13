@@ -57,6 +57,7 @@ public class SplashFragment extends BaseFragment<SplashFragmentPresenterInterfac
 
     @Override
     public void displayMenu() {
+        ((MainActivity) getActivity()).startLocationService();
         if (isResumed()) {
             ((MainActivity) getActivity()).showFragment(new MenuFragment());
         } else {
