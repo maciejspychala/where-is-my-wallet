@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -73,11 +72,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         if (lastLocation != null) {
-            DataHolder.setUserLocation(getBaseContext(),
-                    locationToLatLng(lastLocation));
+            DataHolder.setUserLocation(getBaseContext(), locationToLatLng(lastLocation));
         }
         initLocationUpdates();
-
     }
 
 
@@ -87,21 +84,16 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
         initDataHolder();
         if (DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected() && !tracking) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    googleApiClient, locationRequest, this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             tracking = true;
-            Toast.makeText(LocationService.this, "request", Toast.LENGTH_SHORT).show();
         }
     }
 
     private synchronized void removeLocationUpdates() {
         initDataHolder();
         if (!DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected() && tracking) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(
-                    googleApiClient, this);
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
             tracking = false;
-            Toast.makeText(LocationService.this, "remove", Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -111,17 +103,14 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(LocationService.this, "update", Toast.LENGTH_SHORT).show();
         checkDistanceToCar(location);
         DataHolder.setUserLocation(getBaseContext(), locationToLatLng(location));
     }
@@ -134,7 +123,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             car.setLongitude(DataHolder.getCarLocation().longitude);
             location.setAccuracy(0f);
             float distance = location.distanceTo(new Location(car));
-            if (distance < 20.0f) {
+            if (distance < 20.0f && tracking) {
                 createNotification();
             }
         } catch (Exception e) {
@@ -174,9 +163,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         } else {
             notificationBuilder.setContentTitle(getString(R.string.ups))
                     .setContentText(getString(R.string.go_back_for_wallet));
-
         }
 
+        notificationBuilder.setVibrate(new long[]{100, 100, 100, 100});
         Intent resultIntent = new Intent(this, MainActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
@@ -187,5 +176,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, notificationBuilder.build());
+
+        tracking = false;
+        DataHolder.setTracking(getBaseContext(), false);
     }
 }
