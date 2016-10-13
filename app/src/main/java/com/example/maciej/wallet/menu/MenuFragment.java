@@ -1,10 +1,13 @@
 package com.example.maciej.wallet.menu;
 
+import android.widget.CheckBox;
+
 import com.example.maciej.wallet.MainActivity;
 import com.example.maciej.wallet.R;
 import com.example.maciej.wallet.base.BaseFragment;
 import com.example.maciej.wallet.map.MapFragment;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -12,6 +15,8 @@ import butterknife.OnClick;
  */
 public class MenuFragment extends BaseFragment<MenuFragmentPresenterInterface> implements MenuFragmentView {
 
+    @BindView(R.id.tracking_checkbox)
+    CheckBox trackingCheckBox;
 
     @Override
     protected MenuFragmentPresenterInterface initFragmentPresenter() {
@@ -33,8 +38,18 @@ public class MenuFragment extends BaseFragment<MenuFragmentPresenterInterface> i
         presenter.itemSelected(MapFragment.WALLET);
     }
 
+    @OnClick(R.id.tracking_button)
+    public void setTracking() {
+        presenter.setTracking(getActivity());
+    }
+
     @Override
     public void openMapFragment(int item) {
         ((MainActivity) getActivity()).showFragment(MapFragment.newInstance(item), true);
+    }
+
+    @Override
+    public void setTrackingCheckBox(boolean val) {
+        trackingCheckBox.setChecked(val);
     }
 }

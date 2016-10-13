@@ -29,7 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-
+    public static final String TRACKING_KEY = "TRACKING_KEY";
     private GoogleApiClient googleApiClient;
     private final int TIME_INTERVAL = 10000;
     private final int MIN_TIME_INTERVAL = 5000;
@@ -87,9 +87,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     private void checkDistanceToCar(Location location) {
-        if (DataHolder.getCarLocation() == null) {
-            DataHolder.init(getBaseContext());
-        }
+        initDataHolder();
         try {
             Location car = new Location("");
             car.setLatitude(DataHolder.getCarLocation().latitude);
@@ -106,7 +104,17 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        int start = super.onStartCommand(intent, flags, startId);
+        initDataHolder();
+        boolean tracking = DataHolder.isTracking();
+        Toast.makeText(getBaseContext(), Boolean.toString(tracking), Toast.LENGTH_LONG).show();
+        return start;
+    }
+
+    private void initDataHolder() {
+        if (DataHolder.getCarLocation() == null) {
+            DataHolder.init(getBaseContext());
+        }
     }
 
     private void createNotification() {
@@ -125,27 +133,15 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
         }
 
-// Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, MainActivity.class);
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(MainActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-// mId allows you to update the notification later on.
         mNotificationManager.notify(1, notificationBuilder.build());
     }
 }

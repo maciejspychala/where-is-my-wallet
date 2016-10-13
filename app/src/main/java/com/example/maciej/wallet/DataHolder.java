@@ -17,11 +17,13 @@ public class DataHolder {
     public static String LAT = "LAT";
     public static String LNG = "LON";
     public static String IN_POCKET = "IN_POCKET";
+    public static String TRACKING = "TRACKING";
 
     private static LatLng userLocation;
     private static LatLng carLocation;
     private static LatLng walletLocation;
     private static boolean walletInPocket;
+    private static boolean tracking;
 
     public static void init(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
@@ -59,9 +61,18 @@ public class DataHolder {
 
     public static void setWalletInPocket(Context context, boolean walletInPocket) {
         DataHolder.walletInPocket = walletInPocket;
+        setBoolean(context, walletInPocket, IN_POCKET);
+    }
+
+    public static void setTracking(Context context, boolean tracking) {
+        DataHolder.tracking = tracking;
+        setBoolean(context, tracking, TRACKING);
+    }
+
+    private static void setBoolean(Context context, boolean val, String KEY) {
         SharedPreferences preferences = context.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(IN_POCKET, walletInPocket);
+        editor.putBoolean(KEY, val);
         editor.apply();
     }
 
@@ -87,5 +98,9 @@ public class DataHolder {
 
     public static boolean isWalletInPocket() {
         return walletInPocket;
+    }
+
+    public static boolean isTracking() {
+        return tracking;
     }
 }

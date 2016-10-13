@@ -41,9 +41,13 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             showFragment(new SplashFragment());
         } else {
-            Intent intent = new Intent(this, LocationService.class);
-            startService(intent);
+            startLocationService();
             showFragment(new MenuFragment());
         }
+    }
+
+    public void startLocationService() {
+        Intent intent = new Intent(this, LocationService.class);
+        startService(intent);
     }
 }
