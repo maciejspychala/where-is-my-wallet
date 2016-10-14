@@ -28,9 +28,9 @@ import butterknife.OnClick;
  */
 public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> implements MapFragmentView, OnMapReadyCallback {
 
-    public static int CAR = 1;
-    public static int WALLET = 2;
-    public static int SHOW_WALLET = 3;
+    public static final int CAR = 1;
+    public static final int WALLET = 2;
+    public static final int SHOW_WALLET = 3;
     public static final String KEY = "KEY";
     private GoogleMap map;
     private boolean showWallet;

@@ -62,11 +62,11 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> impleme
 
     @Override
     public String formatTitle(Resources resources) {
-        String title = "";
+        String title;
         if (model.key == SHOW_WALLET) {
             title = resources.getString(R.string.wallet_position);
         } else {
-            String.format(resources.getString(R.string.map_title),
+            title = String.format(resources.getString(R.string.map_title),
                     model.key == WALLET ? resources.getString(R.string.wallet) : resources.getString(R.string.car));
         }
         return title;

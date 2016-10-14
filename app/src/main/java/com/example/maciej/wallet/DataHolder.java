@@ -9,15 +9,15 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by maciej on 08/10/16.
  */
 public class DataHolder {
-    public static String SHARED_PREF_KEY = "locations";
+    public static final String SHARED_PREF_KEY = "locations";
 
-    public static String USER_LOCATION = "USER_LOCATION";
-    public static String CAR_LOCATION = "CAR_LOCATION";
-    public static String WALLET_LOCATION = "WALLET_LOCATION";
-    public static String LAT = "LAT";
-    public static String LNG = "LON";
-    public static String IN_POCKET = "IN_POCKET";
-    public static String TRACKING = "TRACKING";
+    public static final String USER_LOCATION = "USER_LOCATION";
+    public static final String CAR_LOCATION = "CAR_LOCATION";
+    public static final String WALLET_LOCATION = "WALLET_LOCATION";
+    public static final String LAT = "LAT";
+    public static final String LNG = "LON";
+    public static final String IN_POCKET = "IN_POCKET";
+    public static final String TRACKING = "TRACKING";
 
     private static LatLng userLocation;
     private static LatLng carLocation;
