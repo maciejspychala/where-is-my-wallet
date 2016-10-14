@@ -33,7 +33,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private final int TIME_INTERVAL = 15000;
     private final int MIN_TIME_INTERVAL = 10000;
     private LocationRequest locationRequest;
-    private boolean tracking;
 
     @Nullable
     @Override
@@ -63,7 +62,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         locationRequest = new LocationRequest();
         locationRequest.setInterval(TIME_INTERVAL);
         locationRequest.setFastestInterval(MIN_TIME_INTERVAL);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @Override
@@ -84,9 +83,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     private synchronized void initLocationUpdates() {
         initDataHolder();
-        if (checkForPermission() && DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected() && !tracking) {
+        if (checkForPermission() && DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-            tracking = true;
         }
     }
 
@@ -103,9 +101,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     private synchronized void removeLocationUpdates() {
         initDataHolder();
-        if (!DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected() && tracking) {
+        if (!DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-            tracking = false;
         }
     }
 
@@ -123,7 +120,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(LocationService.this, "new location", Toast.LENGTH_SHORT).show();
         DataHolder.setUserLocation(getBaseContext(), locationToLatLng(location));
         checkDistanceToCar(location);
     }
@@ -136,7 +132,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             car.setLongitude(DataHolder.getCarLocation().longitude);
             location.setAccuracy(0f);
             float distance = location.distanceTo(new Location(car));
-            if (distance < 25.0f && tracking) {
+            if (distance < 30.0f && DataHolder.isTracking()) {
                 createNotification();
             }
         } catch (Exception e) {
@@ -185,8 +181,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, notificationBuilder.build());
-        tracking = false;
         DataHolder.setTracking(getBaseContext(), false);
+        removeLocationUpdates();
     }
 
     private void setIntentForNotification(NotificationCompat.Builder notificationBuilder) {
