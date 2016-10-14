@@ -68,17 +68,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Toast.makeText(LocationService.this, "new location", Toast.LENGTH_SHORT).show();
         saveLastLocation();
         initLocationUpdates();
     }
 
 
     void saveLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        if (googleApiClient != null && googleApiClient.isConnected()) {
+        if (checkForPermission() && googleApiClient != null && googleApiClient.isConnected()) {
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (lastLocation != null) {
                 DataHolder.setUserLocation(getBaseContext(), locationToLatLng(lastLocation));
@@ -87,14 +83,22 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     private synchronized void initLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
         initDataHolder();
-        if (DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected() && !tracking) {
+        if (checkForPermission() && DataHolder.isTracking() && googleApiClient != null && googleApiClient.isConnected() && !tracking) {
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             tracking = true;
         }
+    }
+
+    private boolean checkForPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            stopSelf();
+            return false;
+        }
+        return true;
     }
 
     private synchronized void removeLocationUpdates() {
@@ -119,6 +123,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
+        Toast.makeText(LocationService.this, "new location", Toast.LENGTH_SHORT).show();
         DataHolder.setUserLocation(getBaseContext(), locationToLatLng(location));
         checkDistanceToCar(location);
     }

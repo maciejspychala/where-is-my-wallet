@@ -11,4 +11,6 @@ public interface MenuFragmentPresenterInterface extends BasePresenterInterface {
     void itemSelected(int item);
 
     void setTracking(Activity activity);
+
+    void onResume();
 }

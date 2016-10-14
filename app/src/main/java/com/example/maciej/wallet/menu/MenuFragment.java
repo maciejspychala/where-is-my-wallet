@@ -24,6 +24,12 @@ public class MenuFragment extends BaseFragment<MenuFragmentPresenterInterface> i
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
     public int getLayoutId() {
         return R.layout.fragment_menu;
     }

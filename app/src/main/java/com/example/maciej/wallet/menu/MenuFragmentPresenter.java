@@ -27,4 +27,9 @@ public class MenuFragmentPresenter extends BasePresenter<MenuFragmentView> imple
         ((MainActivity) activity).startLocationService();
         view.setTrackingCheckBox(DataHolder.isTracking());
     }
+
+    @Override
+    public void onResume() {
+        view.setTrackingCheckBox(DataHolder.isTracking());
+    }
 }
