@@ -108,7 +108,11 @@ public class MapFragment extends BaseFragment<MapFragmentPresenterInterface> imp
     @Override
     public void setMapCamera(LatLng location) {
         if (map != null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13.5f));
+            if (location.latitude == 0.0f && location.longitude == 0.0f) {
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(54.4050259, 18.5746844), 6.0f));
+            } else {
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13.5f));
+            }
         }
     }
 

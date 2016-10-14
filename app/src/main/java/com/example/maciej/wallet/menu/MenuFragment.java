@@ -51,6 +51,7 @@ public class MenuFragment extends BaseFragment<MenuFragmentPresenterInterface> i
 
     @Override
     public void openMapFragment(int item) {
+        ((MainActivity) getActivity()).startLocationService();
         ((MainActivity) getActivity()).showFragment(MapFragment.newInstance(item), true);
     }
 
